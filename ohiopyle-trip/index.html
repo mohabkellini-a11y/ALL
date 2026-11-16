@@ -6,522 +6,392 @@
 <title>Ohiopyle Hiking Weekend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Plan: slate-and-forest neutrals with a blaze-orange accent (hunting-season orange, also the color of trail blazes).
-   Layout: one long mobile-first page, sticky day nav, timeline rows, place cards with drawn scenes. */
+/* Adventure orange + map teal on warm paper. One light theme on purpose.
+   Layout: photo hero, sticky pill nav, short cards. Mobile first. */
 :root{
-  --bg:#f3f4f1;
-  --surface:#ffffff;
-  --ink:#1d2622;
-  --muted:#5b6862;
-  --line:#d9ddd8;
-  --forest:#25463a;
-  --blaze:#e2561d;
-  --blaze-soft:#fde6db;
-  --sky:#cfe0e6;
-  --font-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --font-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#121815; --surface:#1b2420; --ink:#e7ece9; --muted:#9fb0a8; --line:#2d3a34;
-    --forest:#8cc5aa; --blaze:#ff7a42; --blaze-soft:#3a2219; --sky:#1f3540; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#121815; --surface:#1b2420; --ink:#e7ece9; --muted:#9fb0a8; --line:#2d3a34;
-  --forest:#8cc5aa; --blaze:#ff7a42; --blaze-soft:#3a2219; --sky:#1f3540; color-scheme: dark;
+  --bg:#fff7ed; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#f6dccb;
+  --orange:#ea580c; --orange-deep:#c2410c; --teal:#0e7490; --teal-soft:#cff3f8; --sun:#fbbf24;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55}
-a{color:var(--forest);font-weight:600;text-underline-offset:3px}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--blaze);outline-offset:2px}
-h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0}
-.wrap{max-width:920px;margin:0 auto;padding:0 18px}
-header.hero{background:var(--forest);color:#fff;padding:34px 0 28px}
-:root[data-theme="dark"] header.hero{background:#1e3a2f}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) header.hero{background:#1e3a2f}}
-.hero .kicker{display:inline-block;background:var(--blaze);color:#fff;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:4px}
-.hero h1{font-size:clamp(32px,7vw,54px);font-weight:800;margin:14px 0 8px;color:#fff}
-.hero p{margin:0;max-width:62ch;color:#e3efe9}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
-.fact{background:rgba(255,255,255,.1);border-radius:8px;padding:10px 12px}
-.fact b{display:block;font-family:var(--font-display);font-size:20px;color:#fff}
-.fact span{font-size:14px;color:#cfe3d9}
-nav.days{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
-nav.days .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
-nav.days a{flex:none;text-decoration:none;color:var(--ink);font-size:15px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
-nav.days a:hover{border-color:var(--blaze)}
-section{padding:34px 0 8px}
-section > .wrap > h2{font-size:clamp(24px,4.5vw,32px);margin-bottom:6px}
-.sub{color:var(--muted);margin:0 0 18px;max-width:65ch}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.car h3{font-size:19px;margin-bottom:4px}
-.car .leave{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--blaze)}
-.car ul{margin:8px 0 0;padding-left:18px}
-.car li{margin:3px 0}
-.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--blaze-soft);color:var(--blaze)}
-.tag.green{background:transparent;border:1px solid var(--forest);color:var(--forest)}
-/* timeline */
-.timeline{list-style:none;margin:0;padding:0;border-left:3px solid var(--line);margin-left:6px}
-.timeline li{position:relative;padding:0 0 18px 20px}
-.timeline li::before{content:"";position:absolute;left:-9px;top:6px;width:13px;height:13px;border-radius:3px;background:var(--surface);border:3px solid var(--forest)}
-.timeline li.key::before{background:var(--blaze);border-color:var(--blaze)}
-.timeline .t{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.02em}
-.timeline .w{font-weight:700}
-.timeline p{margin:2px 0 0;max-width:65ch}
-.who{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--forest);margin-left:6px}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+a{color:var(--teal);font-weight:700;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;color:#fff;padding:40px 0 46px;
+  background:radial-gradient(900px 500px at 85% -10%,#fbbf24 0,transparent 60%),
+             radial-gradient(700px 500px at -10% 110%,#0e7490 0,transparent 60%),
+             linear-gradient(135deg,#ea580c,#c2410c 55%,#9a3412)}
+.hero .wrap{display:grid;gap:30px;align-items:center}
+@media (min-width:760px){.hero .wrap{grid-template-columns:1.15fr .85fr}}
+.kicker{display:inline-block;background:#0f172a;color:#fff;font-weight:800;font-size:14px;letter-spacing:.04em;padding:6px 12px;border-radius:999px}
+.hero h1{font-size:clamp(40px,9vw,72px);font-weight:700;margin:14px 0 10px}
+.hero h1 span{color:#fde68a}
+.hero p{margin:0;font-size:19px;max-width:34ch;color:#fff}
+.count{display:flex;gap:10px;margin:22px 0 0;flex-wrap:wrap}
+.count div{background:rgba(15,23,42,.35);border-radius:14px;padding:10px 14px;min-width:74px;text-align:center}
+.count b{display:block;font-family:var(--display);font-size:30px;font-variant-numeric:tabular-nums;line-height:1}
+.count span{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;font-weight:800;text-decoration:none;transition:transform .15s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn.main{background:#fff;color:var(--orange-deep)}
+.btn.ghost{border:2px solid #fff;color:#fff}
+.crew{margin:0;justify-self:center;background:#fff;padding:10px 10px 0;border-radius:10px;transform:rotate(2.5deg);box-shadow:0 18px 40px rgba(15,23,42,.35);max-width:320px}
+.crew img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:4px}
+.crew figcaption{font-family:var(--display);font-weight:600;color:var(--ink);text-align:center;padding:10px 0 12px;font-size:18px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:5;background:rgba(255,247,237,.95);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px}
+nav a:hover{border-color:var(--orange)}
+
+section{padding:38px 0 6px}
+h2{font-size:clamp(28px,5.5vw,38px);font-weight:700;margin-bottom:6px}
+h2::after{content:"";display:block;width:54px;height:6px;border-radius:3px;background:var(--orange);margin-top:8px}
+.sub{color:var(--muted);margin:8px 0 18px;max-width:60ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 2px 0 var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--teal-soft);color:#0b5566}
+.big{font-family:var(--display);font-size:34px;font-weight:700;color:var(--orange-deep);line-height:1.1;margin:6px 0}
+.card h3{font-size:21px;margin-top:8px}
+.card ul{margin:8px 0 0;padding-left:18px}
+.card li{margin:4px 0}
+.note{background:#fff;border-left:6px solid var(--sun);border-radius:0 12px 12px 0;padding:12px 14px;margin:14px 0 0}
+.wx{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.wx div{background:var(--teal);color:#fff;border-radius:14px;padding:12px 8px;text-align:center}
+.wx b{display:block;font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.wx span{font-size:14px;font-weight:700}
+
+/* days */
+.day h3{display:flex;align-items:center;gap:10px}
+.day h3 i{font-style:normal;background:var(--orange-deep);color:#fff;border-radius:10px;padding:4px 10px;font-size:16px}
+.steps{list-style:none;margin:12px 0 0;padding:0}
+.steps li{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:9px 0;border-top:1px dashed var(--line)}
+.steps li:first-child{border-top:0}
+.steps time{font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums;font-size:15px;padding-top:2px}
+.steps b{display:block}
+.steps span{color:var(--muted);font-size:15.5px}
+
 /* places */
-.places{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:18px}
-.place{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
-.place svg{display:block;width:100%;height:auto;aspect-ratio:16/8;background:var(--sky)}
+.place{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.ph{position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,var(--teal),#164e63);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--display);font-size:20px;text-align:center;padding:12px}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph .tag{position:absolute;left:10px;top:10px;background:#fff;color:var(--orange-deep);z-index:1}
 .place .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.place h3{font-size:19px}
+.place h3{margin:0;font-size:20px}
 .place p{margin:0}
-.place .links{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:auto;padding-top:8px;font-size:15px}
-.must{font-size:15px;color:var(--muted)}
-.stars{margin:0;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
-.stars i{font-style:normal;color:var(--blaze)}
-.stars span{color:var(--muted);font-weight:400}
-.must b{color:var(--ink)}
+.stars{margin:0;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.stars i{font-style:normal;color:var(--orange)}
+.stars span{color:var(--muted);font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:auto;padding-top:6px;font-size:15px}
+.credit{font-size:12px;color:var(--muted)}
+.credit a{font-weight:600;color:var(--muted)}
+
 /* food */
-.food{display:grid;gap:12px}
-.food .card{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start}
-.food .when{font-family:var(--font-display);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;background:var(--blaze-soft);color:var(--blaze);border-radius:8px;text-align:center;padding:8px 6px;line-height:1.25;overflow-wrap:anywhere}
-.food h3{font-size:18px}
+.food{display:grid;gap:10px}
+.food .card{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:start;padding:14px 16px}
+.when{font-family:var(--display);font-weight:600;font-size:14px;background:var(--orange-deep);color:#fff;border-radius:12px;text-align:center;padding:8px 6px;line-height:1.25;overflow-wrap:anywhere}
+.food h3{font-size:19px;margin:0}
 .food p{margin:4px 0 0}
-.food .order{font-size:15px}
-.food .links{font-size:15px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px}
-/* booking table */
-.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:16px}
-th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-tr:last-child td{border-bottom:0}
-td.cost{font-variant-numeric:tabular-nums;white-space:nowrap}
-/* checklists */
-.lists{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.lists h3{font-size:18px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.lists h3 small{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--muted)}
-.check{list-style:none;margin:0;padding:0}
-.check li{border-top:1px solid var(--line)}
-.check li:first-child{border-top:0}
-.check label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer}
-.check input{width:18px;height:18px;margin-top:3px;accent-color:var(--blaze);flex:none}
+@media (max-width:460px){.food .card{grid-template-columns:1fr}.when{justify-self:start;padding:4px 12px}}
+
+/* book */
+.book .card{display:flex;flex-direction:column;gap:6px}
+.book .price{font-weight:800;color:var(--orange-deep)}
+.book .btn{background:var(--orange-deep);color:#fff;align-self:flex-start;margin-top:auto}
+
+/* lists */
+.check{list-style:none;margin:8px 0 0;padding:0}
+.check label{display:flex;gap:12px;align-items:center;min-height:44px;cursor:pointer;border-top:1px dashed var(--line)}
+.check li:first-child label{border-top:0}
+.check input{width:22px;height:22px;accent-color:var(--orange-deep);flex:none}
 .check input:checked + span{color:var(--muted);text-decoration:line-through}
-.note{border-left:4px solid var(--blaze);background:var(--surface);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0}
-.note b{color:var(--blaze)}
-.weather{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.wx{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
-.wx b{display:block;font-family:var(--font-display);font-size:24px;font-variant-numeric:tabular-nums}
-.wx span{font-size:14px;color:var(--muted)}
-footer{padding:30px 0 50px;color:var(--muted);font-size:14px}
-footer ul{padding-left:18px}
-@media (max-width:420px){body{font-size:16px}.food .card{grid-template-columns:1fr}.food .when{justify-self:start;padding:4px 10px}}
+footer{padding:34px 0 60px;color:var(--muted);font-size:15px}
+footer p{max-width:70ch}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.crew{transform:none}}
 </style>
 </head>
 <body>
 
 <header class="hero">
   <div class="wrap">
-    <span class="kicker">Fri Nov 20 – Sun Nov 22, 2026</span>
-    <h1>Ohiopyle Hiking Weekend</h1>
-    <p>Five friends, two cars, one cabin. We meet at Ohiopyle State Park on Friday, hike the falls and see Fallingwater on Saturday, sleep under the lights in Wheeling, and reach Columbus by about 11 AM on Sunday.</p>
-    <div class="facts">
-      <div class="fact"><b>~3.5 h</b><span>DC → Ohiopyle</span></div>
-      <div class="fact"><b>~3.5 h</b><span>Columbus → Ohiopyle (under 4 h)</span></div>
-      <div class="fact"><b>~2 h</b><span>Wheeling → Columbus on Sunday</span></div>
-      <div class="fact"><b>2 nights</b><span>Ohiopyle cottage, then Oglebay</span></div>
+    <div>
+      <span class="kicker">Fri Nov 20 to Sun Nov 22, 2026</span>
+      <h1>Ohiopyle <span>Weekend</span></h1>
+      <p>Two cars meet in the Pennsylvania mountains on Friday. We hike, we eat, and everyone is in Columbus by 11 AM Sunday.</p>
+      <div class="count" id="count" aria-label="Time until the DC car leaves">
+        <div><b id="cd">0</b><span>days</span></div>
+        <div><b id="ch">0</b><span>hours</span></div>
+        <div><b id="cm">0</b><span>min</span></div>
+      </div>
+      <div class="cta">
+        <a class="btn main" href="#plan">See the plan</a>
+        <a class="btn ghost" href="#book">Book the cabin</a>
+      </div>
     </div>
+    <figure class="crew">
+      <img src="crew.jpg" alt="Our group of five, hugging and laughing in a restaurant" width="709" height="945">
+      <figcaption>The crew</figcaption>
+    </figure>
   </div>
 </header>
 
-<nav class="days" aria-label="Sections">
+<nav aria-label="Sections">
   <div class="wrap">
-    <a href="#leave">Who leaves when</a>
-    <a href="#friday">Friday</a>
-    <a href="#saturday">Saturday</a>
-    <a href="#sunday">Sunday</a>
-    <a href="#maps">Offline maps</a>
-    <a href="#places">Must-see places</a>
-    <a href="#food">Where to eat</a>
-    <a href="#book">Book now</a>
-    <a href="#pack">Packing</a>
-    <a href="#buy">Shopping</a>
+    <a href="#leave">Leave times</a>
+    <a href="#plan">Plan</a>
+    <a href="#places">Must-see</a>
+    <a href="#food">Eat</a>
+    <a href="#book">Book</a>
+    <a href="#pack">Pack and buy</a>
   </div>
 </nav>
 
-<!-- LEAVE -->
 <section id="leave">
   <div class="wrap">
-    <h2>Who leaves when</h2>
-    <p class="sub">Times are approximate. Check traffic the morning you leave.</p>
-    <div class="grid2">
-      <div class="card car">
-        <span class="tag">Car 1 · 3 people</span>
-        <h3>From Washington, DC</h3>
-        <div class="leave">Fri 7:30 AM</div>
+    <h2>When to leave</h2>
+    <p class="sub">Drive times are estimates. Check traffic that morning.</p>
+    <div class="grid">
+      <div class="card">
+        <span class="tag">DC car · 3 people</span>
+        <div class="big">Fri 7:30 AM</div>
         <ul>
-          <li>Route: I-270 → I-70 → I-68 west → US-40 → PA-381 north.</li>
-          <li>10:45 AM: early lunch and groceries in Grantsville, MD (exit 19 on I-68).</li>
-          <li>About 12:15 PM: arrive in Ohiopyle and hike the falls.</li>
-          <li>3:00 PM: check in to the cottage.</li>
+          <li>I-270, I-70, I-68 west, US-40, then PA-381 north. About 3.5 hours.</li>
+          <li>Stop in Grantsville, MD at 10:45 for lunch and groceries.</li>
+          <li>Reach Ohiopyle around 12:15 PM. Cottage check-in is 3 PM.</li>
         </ul>
       </div>
-      <div class="card car">
-        <span class="tag">Car 2 · 2 people</span>
-        <h3>From Columbus, OH</h3>
-        <div class="leave">Fri 12:00 PM</div>
+      <div class="card">
+        <span class="tag">Columbus car · 2 people</span>
+        <div class="big">Fri 12:00 PM</div>
         <ul>
-          <li>Route: I-70 east → Wheeling → Washington, PA → US-40 east → PA-381 north.</li>
-          <li>About 1:50 PM: fish sandwich to go at Coleman's in Wheeling (open Friday until 6:30 PM).</li>
-          <li>About 4:45 PM: arrive at the cottage. Total driving is about 3.5 hours.</li>
+          <li>I-70 east to Washington, PA, then US-40 east and PA-381 north. About 3.5 hours.</li>
+          <li>Grab a fish sandwich at Coleman's in Wheeling around 1:50 PM.</li>
+          <li>Reach the cottage around 4:45 PM.</li>
         </ul>
       </div>
     </div>
-    <div class="note"><b>Sunday:</b> both cars leave Oglebay at 8:30 AM and reach Columbus around 11:00 AM. If anyone has a flight before 1:30 PM, they should skip the Zanesville stop.</div>
-    <div class="weather" aria-label="Forecast for Ohiopyle as of Nov 16">
-      <div class="wx"><span>Fri</span><b>63° / 36°</b><span>Dry</span></div>
-      <div class="wx"><span>Sat</span><b>65° / 40°</b><span>10% rain</span></div>
-      <div class="wx"><span>Sun</span><b>61° / 42°</b><span>25% rain</span></div>
+    <div class="wx" aria-label="Ohiopyle forecast, checked Nov 16">
+      <div><span>Fri</span><b>63° / 36°</b><span>Dry</span></div>
+      <div><span>Sat</span><b>65° / 40°</b><span>Dry</span></div>
+      <div><span>Sun</span><b>61° / 42°</b><span>25% rain</span></div>
     </div>
-    <p class="sub" style="margin-top:8px;font-size:14px">Forecast for Ohiopyle, checked Mon Nov 16. The mountains are colder at night. Check again on Thursday.</p>
+    <p class="note"><b>Sunday:</b> both cars leave Wheeling at 8:30 AM and reach Columbus around 11 AM. Forecast checked Nov 16, so look again Thursday.</p>
   </div>
 </section>
 
-<!-- FRIDAY -->
-<section id="friday">
+<section id="plan">
   <div class="wrap">
-    <h2>Friday · Arrive and see the falls</h2>
-    <p class="sub">Easy hikes today. Sunset is about 4:55 PM, so the DC car gets the long daylight.</p>
-    <ol class="timeline">
-      <li><span class="t">10:45 AM</span><span class="who">DC car</span>
-        <div class="w">Lunch and groceries in Grantsville, MD</div>
-        <p>Eat fried chicken at the Casselman, or have lunch at Penn Alps next to the old stone bridge. Then buy the cottage groceries at Casselman Market.</p></li>
-      <li class="key"><span class="t">12:30 PM</span><span class="who">DC car</span>
-        <div class="w">Cucumber Falls, Ohiopyle Falls, Ferncliff Peninsula</div>
-        <p>Cucumber Falls is a short walk from the lot. Then park in town, see Ohiopyle Falls from the overlook, and walk the Ferncliff loop (about 2 miles, mostly easy, with rocky river ledges).</p></li>
-      <li><span class="t">1:50 PM</span><span class="who">Ohio car</span>
-        <div class="w">Coleman's fish sandwich in Wheeling</div>
-        <p>Use the fast line for the fish sandwich. Eat it in the car.</p></li>
-      <li><span class="t">3:00 PM</span><span class="who">DC car</span>
-        <div class="w">Check in at Kentuck Campground</div>
-        <p>Check in at the campground contact station. Make the beds, plug in the heater, and get firewood.</p></li>
-      <li class="key"><span class="t">4:40 PM</span><span class="who">Everyone</span>
-        <div class="w">Sunset at Baughman Rock Overlook</div>
-        <p>This overlook has parking right at the rock. If the Ohio car is late, meet at the cottage instead.</p></li>
-      <li><span class="t">5:45 PM</span><span class="who">Everyone</span>
-        <div class="w">Dinner and campfire</div>
-        <p>Eat at Falls City Pub in town by 7:00 PM, or cook at the cottage. Google lists the pub as open 3:00–8:30 PM on Fridays. Then make s'mores at the fire ring.</p></li>
-    </ol>
-  </div>
-</section>
-
-<!-- SATURDAY -->
-<section id="saturday">
-  <div class="wrap">
-    <h2>Saturday · The big hiking day</h2>
-    <p class="sub">Camping cottages must be empty by 10:00 AM. Pack the cars before breakfast.</p>
-    <ol class="timeline">
-      <li><span class="t">7:00 AM</span><div class="w">Breakfast and pack up</div>
-        <p>Cook at the cottage, or go to Falls Market in town (opens around 7 AM).</p></li>
-      <li class="key"><span class="t">8:15 AM</span><div class="w">Meadow Run Trail to the Cascades and Natural Waterslides</div>
-        <p>This loop is about 3 miles. It has rocky steps and wet ledges, so wear boots. In November the slides are for photos, not for swimming.</p></li>
-      <li class="key"><span class="t">10:30 AM</span><div class="w">Fallingwater guided tour</div>
-        <p>It's a 10-minute drive. Book one time slot for all five people. Plan for about 2 hours on site, including the walk to the classic view.</p></li>
-      <li><span class="t">12:45 PM</span><div class="w">Lunch at Ohiopyle Bakery &amp; Sandwich Shoppe</div>
-        <p>Order the meatball sub, which local reviewers love. The Fallingwater café is a good backup.</p></li>
-      <li><span class="t">1:45 PM</span><div class="w">Last hike: Great Gorge Trail or Baughman Trail</div>
-        <p>Pick one, about 1 hour. Great Gorge follows the river near town. Baughman climbs to the overlook from Friday.</p></li>
-      <li><span class="t">3:00 PM</span><div class="w">Drive to Wheeling, WV (about 1 h 50 min)</div>
-        <p>Check in at Oglebay Lodge or an Oglebay cabin.</p></li>
-      <li><span class="t">5:15 PM</span><div class="w">Dinner in Wheeling</div>
-        <p>Get DiCarlo's square pizza for a fast, local meal, or sit down at Figaretti's for Italian.</p></li>
-      <li class="key"><span class="t">6:15 PM</span><div class="w">Oglebay Festival of Lights</div>
-        <p>It's a 6-mile drive through about a million lights. Go early, because a 5K race runs through the lights this night and traffic will be heavy. The heated trolley from the lodge is the no-driving option.</p></li>
-    </ol>
-  </div>
-</section>
-
-<!-- SUNDAY -->
-<section id="sunday">
-  <div class="wrap">
-    <h2>Sunday · Columbus by mid-day</h2>
-    <ol class="timeline">
-      <li><span class="t">7:30 AM</span><div class="w">Breakfast at the lodge, then check out</div></li>
-      <li><span class="t">8:30 AM</span><div class="w">Leave Oglebay on I-70 west</div>
-        <p>On the way out, look at the Wheeling Suspension Bridge from downtown. It opened in 1849.</p></li>
-      <li><span class="t">9:45 AM</span><div class="w">Zanesville Y-Bridge photo stop (15 min)</div>
-        <p>You can drive across it and end up on the same side of the river.</p></li>
-      <li class="key"><span class="t">11:00 AM</span><div class="w">Arrive in Columbus / CMH airport</div>
-        <p>If your flight is later: Tom's Ice Cream Bowl in Zanesville opens about 11 AM, and the Newark Earthworks (a UNESCO site) are a short detour. Check hours first.</p></li>
-    </ol>
-  </div>
-</section>
-
-<!-- MAPS -->
-<section id="maps">
-  <div class="wrap">
-    <h2>Offline trail maps</h2>
-    <p class="sub">Cell service is weak in the gorge. Download the maps at home on Wi-Fi, before Friday. Each person should have at least one.</p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>App or map</th><th>Cost</th><th>How to use it offline</th><th>Link</th></tr></thead>
-        <tbody>
-          <tr><td><b>Avenza Maps</b><br><span class="must">Best free choice. The official park map shows your GPS dot with no signal.</span></td>
-              <td class="cost">Free</td>
-              <td>Install the Avenza Maps app. Then open the link and add the free Ohiopyle map.</td>
-              <td><a href="https://store.avenza.com/products/ohiopyle-state-park-map-avenza-systems-inc-map">Free Ohiopyle map</a><br><a href="https://store.avenza.com/collections/maps-of-ohiopyle-state-park">All Ohiopyle maps</a></td></tr>
-          <tr><td><b>Official park PDF maps</b><br><span class="must">Park map, trail map and campground map from the state.</span></td>
-              <td class="cost">Free</td>
-              <td>Open each PDF and save it to your phone's Files app.</td>
-              <td><a href="https://www.pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/maps">Park maps page</a><br><a href="https://www.pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/hiking">Trail list and trail map</a></td></tr>
-          <tr><td><b>AllTrails</b><br><span class="must">Trail routes, photos and recent reviews.</span></td>
-              <td class="cost">Free app. Offline maps need the paid plan.</td>
-              <td>Open the park page. Search each trail name below. Tap Download on each one.</td>
-              <td><a href="https://www.alltrails.com/parks/us/pennsylvania/ohiopyle-state-park">Ohiopyle on AllTrails</a></td></tr>
-          <tr><td><b>Google Maps</b><br><span class="must">For driving, not for trails.</span></td>
-              <td class="cost">Free</td>
-              <td>Search "Ohiopyle, PA". Tap your profile photo, then Offline maps, then Select your own map. Do the same for Wheeling, WV.</td>
-              <td><a href="https://www.google.com/maps/search/?api=1&query=Ohiopyle%20State%20Park%20PA">Ohiopyle in Google Maps</a></td></tr>
-          <tr><td><b>Gaia GPS or komoot</b><br><span class="must">Other trail apps, if you already use one.</span></td>
-              <td class="cost">Offline maps usually need a paid plan</td>
-              <td>Search "Ohiopyle State Park" and download the area.</td>
-              <td><a href="https://www.gaiagps.com/">gaiagps.com</a><br><a href="https://www.komoot.com/">komoot.com</a></td></tr>
-        </tbody>
-      </table>
+    <h2>The plan</h2>
+    <p class="sub">Sunset is about 4:55 PM, so the hiking happens early.</p>
+    <div class="grid">
+      <div class="card day">
+        <h3><i>Fri</i> Waterfalls and a fire</h3>
+        <ol class="steps">
+          <li><time>12:30 PM</time><div><b>Cucumber Falls and Ohiopyle Falls</b><span>DC car. Both are short walks.</span></div></li>
+          <li><time>1:30 PM</time><div><b>Ferncliff loop</b><span>DC car. 1.7 easy miles along the river.</span></div></li>
+          <li><time>3:00 PM</time><div><b>Check in</b><span>Kentuck Campground contact station.</span></div></li>
+          <li><time>4:40 PM</time><div><b>Sunset at Baughman Rock</b><span>Everyone. You can park next to it.</span></div></li>
+          <li><time>5:45 PM</time><div><b>Dinner at Falls City Pub</b><span>It closes at 8:30. Campfire after.</span></div></li>
+        </ol>
+      </div>
+      <div class="card day">
+        <h3><i>Sat</i> The big day</h3>
+        <ol class="steps">
+          <li><time>7:00 AM</time><div><b>Breakfast and pack the cars</b><span>Cottages must be empty by 10 AM.</span></div></li>
+          <li><time>8:15 AM</time><div><b>Meadow Run Trail</b><span>3 miles. Cascades and the natural waterslides.</span></div></li>
+          <li><time>10:30 AM</time><div><b>Fallingwater tour</b><span>10 minutes away. Allow 2 hours.</span></div></li>
+          <li><time>12:45 PM</time><div><b>Lunch at Ohiopyle Bakery</b></div></li>
+          <li><time>1:45 PM</time><div><b>One more hour on the trail</b><span>Great Gorge Trail, by the river.</span></div></li>
+          <li><time>3:00 PM</time><div><b>Drive to Wheeling</b><span>About 1 hour 50 minutes.</span></div></li>
+          <li><time>6:15 PM</time><div><b>Festival of Lights</b><span>After pizza or Italian in town.</span></div></li>
+        </ol>
+      </div>
+      <div class="card day">
+        <h3><i>Sun</i> To Columbus</h3>
+        <ol class="steps">
+          <li><time>7:30 AM</time><div><b>Breakfast and check out</b></div></li>
+          <li><time>8:30 AM</time><div><b>Leave Wheeling on I-70 west</b><span>Walk onto the old suspension bridge first if you are up early.</span></div></li>
+          <li><time>9:45 AM</time><div><b>Zanesville Y-Bridge</b><span>15-minute photo stop.</span></div></li>
+          <li><time>11:00 AM</time><div><b>Columbus</b><span>Flying after 2 PM? Add ice cream at Tom's or the Newark Earthworks.</span></div></li>
+        </ol>
+      </div>
     </div>
-    <h3 style="font-size:19px;margin:22px 0 8px">Trail names to search in the apps</h3>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Trail</th><th>Day</th><th>Length</th><th>Blaze color</th></tr></thead>
-        <tbody>
-          <tr><td><b>Cucumber Falls Trail</b></td><td>Fri</td><td class="cost">0.4 mi</td><td>White</td></tr>
-          <tr><td><b>Ferncliff Trail</b> (Ferncliff Peninsula)</td><td>Fri</td><td class="cost">About 2 mi loop</td><td>Check the park map</td></tr>
-          <tr><td><b>Baughman Rock Overlook</b></td><td>Fri</td><td class="cost">Drive-up</td><td>None</td></tr>
-          <tr><td><b>Meadow Run Trail</b> (Cascades, Waterslides)</td><td>Sat</td><td class="cost">3 mi</td><td>Yellow</td></tr>
-          <tr><td><b>Great Gorge Trail</b></td><td>Sat (option)</td><td class="cost">2.6 mi</td><td>Green</td></tr>
-          <tr><td><b>Baughman Trail</b></td><td>Sat (option)</td><td class="cost">3.4 mi, steep</td><td>Red</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="note"><b>Tip:</b> Put your phone in airplane mode at home and open each map once. If it opens, it will work in the park. Bring a power bank, because GPS uses a lot of battery.</div>
   </div>
 </section>
 
-<!-- PLACES -->
 <section id="places">
   <div class="wrap">
-    <h2>Must-see places</h2>
-    <p class="sub">Star ratings are from Google Maps, checked Nov 16, 2026. The drawings are place markers. Tap "Photos &amp; map" on any card to see real pictures and reviews on Google Maps.</p>
-    <div class="places" id="placeGrid"></div>
+    <h2>Must-see</h2>
+    <p class="sub">Stars are Google Maps ratings, checked Nov 16, 2026.</p>
+    <div class="grid" id="placeGrid"></div>
   </div>
 </section>
 
-<!-- FOOD -->
 <section id="food">
   <div class="wrap">
-    <h2>Where to eat on the way</h2>
-    <p class="sub">These are mom-and-pop places that locals and reviewers keep naming. Star ratings are from Google Maps, checked Nov 16, 2026. Tap the links to read the reviews before you go.</p>
+    <h2>Where to eat</h2>
+    <p class="sub">Small local places. Stars are from Google Maps.</p>
     <div class="food" id="foodList"></div>
   </div>
 </section>
 
-<!-- BOOK -->
-<section id="book">
+<section id="book" class="book">
   <div class="wrap">
-    <h2>Book now</h2>
-    <p class="sub">Book the cottage and Fallingwater today. The other items can wait until later this week.</p>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>What</th><th>Night / time</th><th>Cost (approx.)</th><th>Book</th></tr></thead>
-        <tbody>
-          <tr><td><b>Ohiopyle camping cottage</b><br><span class="must">Kentuck Campground. Sleeps 5 in bunks. Cottages 196–198 and 235–237. Bring your own linens, towels, dishes and pans.</span></td>
-              <td>Fri Nov 20</td><td class="cost">$39–69 + $6.50 fee</td>
-              <td><a href="https://pennsylvaniastateparks.reserveamerica.com/">PA Parks reservations</a><br>or call 888-727-2757<br><a href="https://www.pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/stay">Park lodging page</a></td></tr>
-          <tr><td><b>Backup: Ohiopyle yurt</b><br><span class="must">Also sleeps 5. Has a stove, microwave and fridge.</span></td>
-              <td>Fri Nov 20</td><td class="cost">$56–144 + fee</td>
-              <td><a href="https://pennsylvaniastateparks.reserveamerica.com/">PA Parks reservations</a></td></tr>
-          <tr><td><b>Fallingwater guided tour</b><br><span class="must">Closed Wednesdays. Tickets are non-refundable.</span></td>
-              <td>Sat ~10:30 AM</td><td class="cost">$42 + 6% fee each</td>
-              <td><a href="https://fallingwater.org/visit/fallingwater-tours/">fallingwater.org</a><br>724-329-8501</td></tr>
-          <tr><td><b>Oglebay Lodge or cabin</b><br><span class="must">Ask for a room or cabin for 5.</span></td>
-              <td>Sat Nov 21</td><td class="cost">Check site</td>
-              <td><a href="https://oglebay.com/holiday-overnight-packages/">Oglebay stays</a><br>304-243-4000</td></tr>
-          <tr><td><b>Festival of Lights</b><br><span class="must">Drive-through, dusk to midnight.</span></td>
-              <td>Sat evening</td><td class="cost">About $30 per car</td>
-              <td><a href="https://oglebay.com/lights">oglebay.com/lights</a></td></tr>
-          <tr><td><b>Lights trolley (optional)</b><br><span class="must">Heated, leaves from the lodge. Booking opens 7 days ahead.</span></td>
-              <td>Sat evening</td><td class="cost">$30 per person</td>
-              <td>Call 304-243-4000</td></tr>
-        </tbody>
-      </table>
+    <h2>Book these</h2>
+    <p class="sub">The cottage and the Fallingwater tour come first. Do them today.</p>
+    <div class="grid">
+      <div class="card">
+        <span class="tag">Fri night</span>
+        <h3>Ohiopyle camping cottage</h3>
+        <p>Sleeps 5 in bunks. Heat and lights, but no kitchen or bathroom. Bring bedding, towels and dishes. A yurt is the backup.</p>
+        <p class="price">$39 to $69, plus $6.50 fee</p>
+        <a class="btn" href="https://pennsylvaniastateparks.reserveamerica.com/">Reserve at PA Parks</a>
+        <p>Or call 888-727-2757. <a href="https://www.pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/stay">Park lodging page</a></p>
+      </div>
+      <div class="card">
+        <span class="tag">Sat 10:30 AM</span>
+        <h3>Fallingwater guided tour</h3>
+        <p>Book one time slot for all five. Tickets are non-refundable.</p>
+        <p class="price">$42 each, plus 6% fee</p>
+        <a class="btn" href="https://fallingwater.org/visit/fallingwater-tours/">Get tickets</a>
+        <p>Or call 724-329-8501.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Sat night</span>
+        <h3>Oglebay Lodge or cabin</h3>
+        <p>Ask for a room or cabin for five. The light show is about $30 per car, paid at the gate.</p>
+        <p class="price">Check the site for rates</p>
+        <a class="btn" href="https://oglebay.com/holiday-overnight-packages/">See Oglebay stays</a>
+        <p>Or call 304-243-4000.</p>
+      </div>
     </div>
-    <div class="note"><b>Plan B:</b> If all the Ohiopyle cottages and yurts are full, book a private cabin near Ohiopyle or Farmington, PA. Keep the rest of the plan the same.</div>
+    <p class="note"><b>If the cottages are full:</b> rent a private cabin near Ohiopyle or Farmington, PA. The plan stays the same.</p>
   </div>
 </section>
 
-<!-- PACK -->
 <section id="pack">
   <div class="wrap">
-    <h2>What to pack</h2>
-    <p class="sub">Days will be cool to mild and nights near freezing. Dress in layers. The cottage has heat but no bathroom, and the bathhouse is a short walk away. Your checkmarks save on your own phone only.</p>
-    <div class="lists" id="packLists"></div>
-  </div>
-</section>
-
-<!-- BUY -->
-<section id="buy">
-  <div class="wrap">
-    <h2>What to buy</h2>
-    <p class="sub">The DC car buys most of this at Casselman Market in Grantsville. Buy firewood near the park. Don't bring it from home.</p>
-    <div class="lists" id="buyLists"></div>
+    <h2>Pack and buy</h2>
+    <p class="sub">Warm days, cold nights. Your checkmarks stay on your own phone.</p>
+    <div class="grid" id="lists"></div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <p><b>Before you go:</b> Hunting seasons are active in late November, so wear something blaze orange on the trails. Rocks near the falls are slippery. Cell service is weak in the gorge, so download offline Google Maps for Ohiopyle.</p>
-    <p>Sources used for this plan:</p>
-    <ul>
-      <li><a href="https://www.pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/stay">PA DCNR – Ohiopyle lodging</a> and <a href="https://pa.gov/agencies/dcnr/recreation/where-to-go/state-parks/find-a-park/ohiopyle-state-park/accessibility">cottage list</a></li>
-      <li><a href="https://dcnr.pa.gov/StateParks/StateParkPrices/CabinsandLodging/Pages/default.aspx">PA state park lodging prices</a></li>
-      <li><a href="https://fallingwater.org/fallingwater-to-reopen-for-its-90th-anniversary-and-63rd-tour-season/">Fallingwater 2026 season</a></li>
-      <li><a href="https://oglebay.com/holiday-overnight-packages/">Oglebay Festival of Lights 2026</a></li>
-      <li><a href="https://uncoveringpa.com/ohiopyle-restaurants">Uncovering PA – Ohiopyle restaurants</a></li>
-      <li><a href="https://www.reddit.com/r/gaptrail/wiki/index/restaurants">r/gaptrail wiki – restaurants on the trail</a></li>
-      <li><a href="https://wvliving.com/10-wheelings-best-eats/">WV Living – Wheeling's best eats</a></li>
-      <li><a href="https://onlyinyourstate.com/west-virginia/colemans-fish-market-wheeling-wv">Coleman's Fish Market hours</a></li>
-      <li><a href="https://www.alltrails.com/parks/us/pennsylvania/ohiopyle-state-park">AllTrails – Ohiopyle State Park</a></li>
-      <li><a href="https://store.avenza.com/products/ohiopyle-state-park-map-avenza-systems-inc-map">Avenza – free Ohiopyle State Park map</a></li>
-      <li><a href="https://www.discoverohiopyle.com/hiking">Discover Ohiopyle – trail lengths and blazes</a></li>
-    </ul>
-    <p>Made for our group trip. Prices and hours were checked Nov 16, 2026 and can change.</p>
+    <p><b>Three things to know.</b> It is hunting season, so wear something orange on the trails. The rocks near the falls are slippery. Phones lose signal in the gorge, so save the <a href="https://store.avenza.com/products/ohiopyle-state-park-map-avenza-systems-inc-map">free park map in Avenza</a> and an offline Google Map before you leave.</p>
+    <p>Place photos load from Wikimedia Commons. Tap "Photo credit" on a card for the author and license. Hours and prices were checked Nov 16, 2026 and can change.</p>
   </div>
 </footer>
 
 <script>
 (function(){
+  /* countdown to the DC car leaving */
+  const go = new Date("2026-11-20T07:30:00-05:00").getTime();
+  function tick(){
+    let s = Math.max(0, Math.floor((go - Date.now())/1000));
+    document.getElementById("cd").textContent = Math.floor(s/86400);
+    document.getElementById("ch").textContent = Math.floor(s%86400/3600);
+    document.getElementById("cm").textContent = Math.floor(s%3600/60);
+  }
+  tick(); setInterval(tick, 30000);
+
   const gm = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
-  const rd = q => "https://www.reddit.com/search/?q=" + encodeURIComponent(q);
+  const star = (r,c) => `<p class="stars"><i>★</i> ${r.toFixed(1)} <span>· ${c.toLocaleString("en-US")} Google reviews</span></p>`;
 
-  /* ---------- drawn scenes (generic, original) ---------- */
-  const scenes = {
-    falls: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 70 L60 40 L120 62 L190 30 L260 58 L320 38 V160 H0Z" fill="#2f5a48" opacity=".55"/><path d="M0 95 H120 V160 H0Z" fill="#4a5a52"/><path d="M200 95 H320 V160 H200Z" fill="#4a5a52"/><path d="M120 95 H200 V160 H120Z" fill="#7fb6c9"/><path d="M128 95 v65 M146 95 v65 M164 95 v65 M182 95 v65" stroke="#fff" stroke-width="5" opacity=".75"/><ellipse cx="160" cy="152" rx="60" ry="10" fill="#fff" opacity=".6"/>`,
-    house: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 60 L80 30 L160 55 L240 25 L320 50 V160 H0Z" fill="#2f5a48" opacity=".5"/><path d="M0 118 H320 V160 H0Z" fill="#7fb6c9"/><path d="M110 112 h60 v6 h-60z M150 112 h12 v40 h-12z" fill="#e8e2d0"/><rect x="95" y="78" width="110" height="10" fill="#e8e2d0"/><rect x="120" y="94" width="120" height="10" fill="#e8e2d0"/><rect x="150" y="56" width="16" height="40" fill="#8a7a66"/><rect x="128" y="66" width="70" height="12" fill="#3e4a44"/><path d="M150 118 v40 M162 118 v40" stroke="#fff" stroke-width="4" opacity=".7"/>`,
-    overlook: `<rect width="320" height="160" fill="#f1b48a"/><circle cx="240" cy="70" r="22" fill="#f7d36e"/><path d="M0 92 C60 70 120 104 180 84 S280 70 320 88 V160 H0Z" fill="#7b5a6e" opacity=".7"/><path d="M0 112 C70 96 140 128 210 108 S300 100 320 112 V160 H0Z" fill="#3e4f4a"/><path d="M0 128 L140 120 L170 160 H0Z" fill="#5b5048"/><circle cx="60" cy="112" r="5" fill="#1d2622"/><rect x="57" y="116" width="6" height="12" fill="var(--blaze)"/>`,
-    river: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 50 L70 25 L150 52 L230 22 L320 46 V160 H0Z" fill="#2f5a48" opacity=".55"/><path d="M0 120 C80 100 160 140 320 110 V160 H0Z" fill="#7fb6c9"/><path d="M30 128 q20 -6 40 0 M150 132 q20 -6 40 0 M240 120 q20 -6 40 0" stroke="#fff" stroke-width="3" fill="none"/><path d="M0 104 H320" stroke="#8a7a66" stroke-width="4" stroke-dasharray="2 10"/>`,
-    lights: `<rect width="320" height="160" fill="#14213a"/><path d="M0 120 C80 100 160 130 320 108 V160 H0Z" fill="#0c1424"/><g fill="none" stroke-width="5" stroke-linecap="round"><path d="M40 150 Q110 40 180 150" stroke="#f7d36e"/><path d="M70 150 Q140 60 210 150" stroke="#ff7a42"/><path d="M100 150 Q170 80 240 150" stroke="#7fd6c2"/></g><g fill="#fff"><circle cx="30" cy="30" r="1.6"/><circle cx="90" cy="18" r="1.4"/><circle cx="270" cy="26" r="1.8"/><circle cx="210" cy="40" r="1.2"/></g><path d="M250 150 l18 -50 l18 50z" fill="#2f6a4f"/><circle cx="268" cy="98" r="3" fill="#f7d36e"/>`,
-    bridge: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 130 H320 V160 H0Z" fill="#7fb6c9"/><rect x="40" y="40" width="22" height="90" fill="#8a7a66"/><rect x="258" y="40" width="22" height="90" fill="#8a7a66"/><path d="M51 44 Q160 130 269 44" stroke="#3e4a44" stroke-width="3" fill="none"/><path d="M0 108 H320" stroke="#3e4a44" stroke-width="6"/><g stroke="#3e4a44" stroke-width="1.5"><path d="M80 66v42M110 84v24M140 94v14M180 94v14M210 84v24M240 66v42"/></g>`,
-    ybridge: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 120 H320 V160 H0Z" fill="#7fb6c9"/><path d="M160 120 L160 160" stroke="#7fb6c9" stroke-width="40"/><path d="M0 100 H160 L250 60 M160 100 L250 140" stroke="#5b5048" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M0 100 H160 L250 60 M160 100 L250 140" stroke="#e8e2d0" stroke-width="2" fill="none" stroke-dasharray="6 6"/>`,
-    mounds: `<rect width="320" height="160" fill="var(--sky)"/><path d="M0 120 H320 V160 H0Z" fill="#6f9a5a"/><ellipse cx="160" cy="122" rx="120" ry="26" fill="none" stroke="#4f7a40" stroke-width="10"/><path d="M40 122 q15 -12 30 0 M250 122 q15 -12 30 0" fill="#4f7a40"/><g fill="#2f5a48"><circle cx="20" cy="100" r="16"/><circle cx="300" cy="96" r="20"/></g>`
-  };
-  const svg = (k,label) => `<svg viewBox="0 0 320 160" role="img" aria-label="${label}">${scenes[k]}</svg>`;
-
-  const G = {
-    "Ohiopyle Falls & Cucumber Falls":[["Cucumber Falls",4.8,327],["Ohiopyle Falls",4.8,91]],
-    "Ferncliff Peninsula":[["",4.9,74]],
-    "Baughman Rock Overlook":[["",4.7,373]],
-    "Meadow Run · Cascades & Natural Waterslides":[["Natural Water Slides",4.8,566]],
-    "Fallingwater":[["",4.8,7126]],
-    "Oglebay Festival of Lights":[["",3.7,210]],
-    "Wheeling Suspension Bridge":[["",4.5,247]],
-    "Zanesville Y-Bridge":[["",4.8,9]],
-    "Newark Earthworks (optional)":[["Great Circle Earthworks",4.7,121]],
-    "Casselman Inn & Restaurant · Grantsville, MD":[["",4.3,57]],
-    "Penn Alps Restaurant · Grantsville, MD":[["",4.5,1526]],
-    "Coleman's Fish Market · Wheeling, WV":[["",4.6,2526]],
-    "Falls City Pub · Ohiopyle":[["",4.4,668]],
-    "Falls Market Restaurant & General Store · Ohiopyle":[["",4.1,454]],
-    "Ohiopyle Bakery & Sandwich Shoppe":[["",4.3,234]],
-    "DiCarlo's Pizza · Wheeling, WV":[["",4.4,1229]],
-    "Figaretti's · Wheeling, WV":[["",4.5,1422]],
-    "Tom's Ice Cream Bowl · Zanesville, OH":[["",4.7,2609]]
-  };
-  const stars = n => (G[n]||[]).map(([l,r,c]) => `<p class="stars"><i>★</i> ${r.toFixed(1)} <span>· ${c.toLocaleString("en-US")} Google reviews${l?" · "+l:""}</span></p>`).join("");
-
+  /* img: sources to try in order. w = Wikipedia article lead photo, c = Wikimedia Commons search */
   const places = [
-    {s:"falls", n:"Ohiopyle Falls & Cucumber Falls", day:"Fri", d:"These are the park's two classic waterfalls. Ohiopyle Falls is right in town. Cucumber Falls is a short, steep walk down from a small parking lot.", must:"<b>Don't miss:</b> the view from behind Cucumber Falls, if the rocks are dry.", q:"Cucumber Falls Ohiopyle PA", r:"Cucumber Falls Ohiopyle"},
-    {s:"river", n:"Ferncliff Peninsula", day:"Fri", d:"This is an easy loop on a peninsula inside a bend of the Youghiogheny River. It has rocky ledges, rapids views and old-growth feel.", must:"<b>Don't miss:</b> the ledges looking up at Ohiopyle Falls.", q:"Ferncliff Peninsula Natural Area Ohiopyle", r:"Ferncliff trail Ohiopyle"},
-    {s:"overlook", n:"Baughman Rock Overlook", day:"Fri", d:"This is a big rock above the river gorge. You can drive right to it, which makes it the easy sunset spot.", must:"<b>Don't miss:</b> sunset over the Yough valley at about 4:55 PM.", q:"Baughman Rock Overlook Ohiopyle", r:"Baughman Rock Ohiopyle"},
-    {s:"falls", n:"Meadow Run · Cascades & Natural Waterslides", day:"Sat", d:"This is a rocky creek trail with small cascades and smooth stone chutes. It's the best morning hike in the park.", must:"<b>Don't miss:</b> the Cascades. Allow time for photos.", q:"Meadow Run Trail Ohiopyle", r:"Meadow Run trail Ohiopyle"},
-    {s:"house", n:"Fallingwater", day:"Sat", d:"Frank Lloyd Wright's house sits over a waterfall on Bear Run, 10 minutes from Ohiopyle. Its 2026 season marks the house's 90th anniversary.", must:"<b>Don't miss:</b> the short path downstream to the classic viewpoint after the tour.", q:"Fallingwater Mill Run PA", r:"Fallingwater tour tips"},
-    {s:"lights", n:"Oglebay Festival of Lights", day:"Sat", d:"This is a 6-mile drive-through light show in a big park resort in Wheeling, WV. It's on every night from early November to early January.", must:"<b>Don't miss:</b> the lights over the lake. Arrive before 6 PM to skip the line.", q:"Oglebay Festival of Lights Wheeling WV", r:"Oglebay Festival of Lights"},
-    {s:"bridge", n:"Wheeling Suspension Bridge", day:"Sun", d:"This was once the longest suspension bridge in the world. It is closed to cars now, but you can walk across it. It's a quick stop downtown on your way to I-70.", must:"<b>Don't miss:</b> the view from Heritage Port by the river.", q:"Wheeling Suspension Bridge", r:"Wheeling Suspension Bridge"},
-    {s:"ybridge", n:"Zanesville Y-Bridge", day:"Sun", d:"This rare Y-shaped bridge sits where two rivers meet, right off I-70. It's a 15-minute stop.", must:"<b>Don't miss:</b> the view from Putnam Hill Park above it.", q:"Y-Bridge Zanesville Ohio", r:"Zanesville Y Bridge"},
-    {s:"mounds", n:"Newark Earthworks (optional)", day:"Sun", d:"These are huge 2,000-year-old earthen circles built by the Hopewell culture. They're part of a UNESCO World Heritage Site. It's a short detour if your flight is later.", must:"<b>Don't miss:</b> the Great Circle walk.", q:"Great Circle Earthworks Heath Ohio", r:"Newark Earthworks"}
+    {n:"Ohiopyle Falls", day:"Fri", r:4.8, c:91, d:"A wide 20-foot waterfall in the middle of town.", q:"Ohiopyle Falls PA", img:[["c","Ohiopyle Falls Youghiogheny"],["w","Ohiopyle State Park"]]},
+    {n:"Cucumber Falls", day:"Fri", r:4.8, c:327, d:"Take the stairs down. You can walk behind the water.", q:"Cucumber Falls Ohiopyle PA", img:[["c","Cucumber Falls Ohiopyle"],["w","Cucumber Falls"]]},
+    {n:"Ferncliff Peninsula", day:"Fri", r:4.9, c:74, d:"An easy river loop with rapids on three sides.", q:"Ferncliff Peninsula Natural Area Ohiopyle", img:[["c","Ferncliff Peninsula Ohiopyle"],["c","Ferncliff Ohiopyle"]]},
+    {n:"Baughman Rock Overlook", day:"Fri", r:4.7, c:373, d:"Our sunset spot. A short walk from the car to a view over the gorge.", q:"Baughman Rock Overlook Ohiopyle", img:[["c","Baughman Rock Ohiopyle"],["c","Youghiogheny River Gorge Ohiopyle overlook"]]},
+    {n:"Meadow Run Waterslides", day:"Sat", r:4.8, c:566, d:"A creek that cut smooth chutes into the rock. Too cold to slide in November, good for photos.", q:"Natural Water Slides Ohiopyle PA", img:[["c","Meadow Run Ohiopyle slides"],["c","Meadow Run Ohiopyle"]]},
+    {n:"Fallingwater", day:"Sat", r:4.8, c:7126, d:"Frank Lloyd Wright built this house over a waterfall. After the tour, walk downstream to the famous view.", q:"Fallingwater Mill Run PA", img:[["w","Fallingwater"]]},
+    {n:"Oglebay Festival of Lights", day:"Sat", r:3.7, c:210, d:"A 6-mile drive through holiday lights. Reviews are mixed, so go for the fun of it. Arrive before 6 PM.", q:"Oglebay Festival of Lights Wheeling WV", img:[["c","Oglebay Festival of Lights"],["w","Oglebay Park"]]},
+    {n:"Wheeling Suspension Bridge", day:"Sun", r:4.5, c:247, d:"Opened in 1849. Closed to cars now, so you walk across.", q:"Wheeling Suspension Bridge", img:[["w","Wheeling Suspension Bridge"]]},
+    {n:"Zanesville Y-Bridge", day:"Sun", r:4.8, c:9, d:"A bridge shaped like the letter Y, right off I-70.", q:"Y-Bridge Zanesville Ohio", img:[["w","Zanesville Y-Bridge"]]}
   ];
-  document.getElementById("placeGrid").innerHTML = places.map(p => `
-    <article class="place">
-      ${svg(p.s, p.n)}
+  document.getElementById("placeGrid").innerHTML = places.map((p,i) => `
+    <article class="card place">
+      <div class="ph" id="ph${i}"><span class="tag">${p.day}</span>${p.n}</div>
       <div class="body">
-        <span class="tag green">${p.day}</span>
         <h3>${p.n}</h3>
-        ${stars(p.n)}
+        ${star(p.r,p.c)}
         <p>${p.d}</p>
-        <p class="must">${p.must}</p>
-        <div class="links"><a href="${gm(p.q)}">Photos &amp; map</a><a href="${rd(p.r)}">Reddit tips</a></div>
+        <div class="links"><a href="${gm(p.q)}">More photos and map</a><span class="credit" id="cr${i}"></span></div>
       </div>
     </article>`).join("");
 
+  const api = (host, params) => fetch(`https://${host}/w/api.php?format=json&origin=*&action=query&` + params).then(r => r.json());
+  async function find(kind, term){
+    if (kind === "w"){
+      const j = await api("en.wikipedia.org", "prop=pageimages&piprop=thumbnail|name&pithumbsize=800&redirects=1&titles=" + encodeURIComponent(term));
+      const pg = Object.values(j.query.pages)[0];
+      if (pg && pg.thumbnail) return {src: pg.thumbnail.source, page: "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(pg.pageimage)};
+    } else {
+      const j = await api("commons.wikimedia.org", "generator=search&gsrnamespace=6&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=800&gsrsearch=" + encodeURIComponent(term + " filetype:bitmap"));
+      const pg = j.query && Object.values(j.query.pages)[0];
+      if (pg && pg.imageinfo) return {src: pg.imageinfo[0].thumburl, page: pg.imageinfo[0].descriptionurl};
+    }
+    return null;
+  }
+  places.forEach(async (p,i) => {
+    for (const [kind, term] of p.img){
+      try {
+        const hit = await find(kind, term);
+        if (!hit) continue;
+        const im = new Image();
+        im.alt = p.n; im.loading = "lazy"; im.src = hit.src;
+        im.onerror = () => im.remove();
+        document.getElementById("ph"+i).appendChild(im);
+        document.getElementById("cr"+i).innerHTML = `<a href="${hit.page}">Photo credit</a>`;
+        return;
+      } catch(e) {}
+    }
+  });
+
   const food = [
-    {w:"Fri lunch · DC car", n:"Casselman Inn & Restaurant · Grantsville, MD", d:"This is an old National Road inn known for honey-dipped fried chicken and homemade baked goods. It's right off I-68.", o:"Order: fried chicken plate and a slice of pie to go.", q:"Casselman Restaurant Grantsville MD"},
-    {w:"Fri lunch · DC car", n:"Penn Alps Restaurant · Grantsville, MD", d:"This is a home-cooking restaurant in an 1818 stagecoach stop next to a stone arch bridge and a crafts village. Locals call it the place for traditional local food.", o:"Order: the daily special. Then walk to the Casselman Bridge.", q:"Penn Alps Restaurant Grantsville MD"},
-    {w:"Fri lunch · Ohio car", n:"Coleman's Fish Market · Wheeling, WV", d:"Family-run since 1914 in Centre Market. It sells a famous pile of fried fish on soft white bread. Locals say the seasoned fries are just as good. Use the separate fish sandwich line. Closed Sundays.", o:"Order: fish sandwich and seasoned fries.", q:"Coleman's Fish Market Wheeling WV"},
-    {w:"Fri dinner", n:"Falls City Pub · Ohiopyle", d:"The r/gaptrail wiki calls it THE place to eat and drink in Ohiopyle. It's open all year, has craft beer, and is the only late spot in town. Winter hours are shorter, so call first.", o:"Order: house wings or the steak sandwich.", q:"Falls City Pub Ohiopyle PA"},
-    {w:"Sat breakfast", n:"Falls Market Restaurant & General Store · Ohiopyle", d:"This hometown diner and store by the bridge is open all year. Reddit's trail wiki recommends the homemade pepper jack sticks and a burger.", o:"Order: a big breakfast. Grab trail snacks here too.", q:"Falls Market Restaurant Ohiopyle PA"},
-    {w:"Sat lunch", n:"Ohiopyle Bakery & Sandwich Shoppe", d:"It's a small bakery open April to December. Reviewers keep saying its meatballs are the best in the Laurel Highlands.", o:"Order: meatball sub and a dessert for the drive.", q:"Ohiopyle Bakery and Sandwich Shoppe"},
-    {w:"Sat dinner", n:"DiCarlo's Pizza · Wheeling, WV", d:"This is Ohio Valley-style square pizza. Hot dough comes with cold cheese and pepperoni added after baking. Locals eat it in the parking lot. Don't knock it until you try it.", o:"Order: a dozen squares with pepperoni, eaten hot.", q:"DiCarlo's Pizza Wheeling WV"},
-    {w:"Sat dinner (sit-down)", n:"Figaretti's · Wheeling, WV", d:"This is a family-owned Italian restaurant right off I-70, near Oglebay. Pick it if the group wants a real table and a warm meal before the lights.", o:"Reserve a table for 5.", q:"Figaretti's Restaurant Wheeling WV"},
-    {w:"Sun treat (if time)", n:"Tom's Ice Cream Bowl · Zanesville, OH", d:"It's a frozen-in-time ice cream parlor that has been open since 1948. USA Today once ranked it the #1 place in America for a scoop. ", o:"Order: a sundae and the roasted peanuts.", q:"Tom's Ice Cream Bowl Zanesville OH"}
+    {w:"Fri lunch<br>DC car", n:"Penn Alps, Grantsville MD", r:4.5, c:1526, d:"Home cooking in an 1818 stagecoach stop. The Casselman down the road does fried chicken and pie.", q:"Penn Alps Restaurant Grantsville MD"},
+    {w:"Fri lunch<br>Ohio car", n:"Coleman's Fish Market, Wheeling", r:4.6, c:2526, d:"Fried fish on white bread since 1914. Get the seasoned fries too. Closed Sundays.", q:"Coleman's Fish Market Wheeling WV"},
+    {w:"Fri dinner", n:"Falls City Pub, Ohiopyle", r:4.4, c:668, d:"Local beer on tap. Hikers on Reddit recommend the wings and the steak sandwich.", q:"Falls City Pub Ohiopyle PA"},
+    {w:"Sat breakfast", n:"Falls Market, Ohiopyle", r:4.1, c:454, d:"Diner and general store by the bridge. Opens at 7 AM. Buy trail snacks here.", q:"Falls Market Restaurant Ohiopyle PA"},
+    {w:"Sat lunch", n:"Ohiopyle Bakery", r:4.3, c:234, d:"Order at the window. The meatball sub gets the most praise.", q:"Ohiopyle Bakery Ohiopyle PA"},
+    {w:"Sat dinner", n:"DiCarlo's Pizza, Wheeling", r:4.4, c:1229, d:"Square slices with cold cheese added after baking. It sounds wrong and people love it.", q:"DiCarlo's Pizza Wheeling WV"},
+    {w:"Sat dinner<br>sit-down", n:"Figaretti's, Wheeling", r:4.5, c:1422, d:"Family-run Italian near Oglebay. Reserve a table for five.", q:"Figaretti's Restaurant Wheeling WV"},
+    {w:"Sun treat", n:"Tom's Ice Cream Bowl, Zanesville", r:4.7, c:2609, d:"A 1948 ice cream parlor. Only if your flight is late enough.", q:"Tom's Ice Cream Bowl Zanesville OH"}
   ];
   document.getElementById("foodList").innerHTML = food.map(f => `
     <div class="card">
-      <div class="when">${f.w.replace(" · ","<br>")}</div>
-      <div>
-        <h3>${f.n}</h3>
-        ${stars(f.n)}
-        <p>${f.d}</p>
-        <p class="order"><b>${f.o}</b></p>
-        <div class="links"><a href="${gm(f.q)}">Google reviews &amp; photos</a><a href="${rd(f.q.replace(/ [A-Z]{2}$/,""))}">Reddit</a></div>
-      </div>
+      <div class="when">${f.w}</div>
+      <div><h3>${f.n}</h3>${star(f.r,f.c)}<p>${f.d} <a href="${gm(f.q)}">Reviews and map</a></p></div>
     </div>`).join("");
 
-  const pack = {
-    "Clothes (each person)": ["Waterproof hiking boots, broken in","2–3 pairs of wool hiking socks","Base layer top (synthetic or merino, no cotton)","Fleece or light sweater","Puffy jacket for nights near 35–40°F","Rain shell (Sunday has some rain chance)","Hiking pants (no jeans)","Beanie and light gloves","Blaze orange hat or vest for the trails","Warm sleep clothes","Camp shoes or slides for the bathhouse","Clean outfit and shoes for the flight"],
-    "Cottage gear (group)": ["Sleeping bags or bed linens + blankets for 5 bunks","Pillows","Bath towels","Plates, cups, forks, knives","Pot, pan, spatula, sharp knife","Small camp stove or grill (cottage has no kitchen)","Cooler","Lighter and fire starters","Headlamps or flashlights","Extension cord and phone chargers","Trash bags and paper towels"],
-    "Day pack (each person)": ["Water bottle (1 liter)","Snacks for the trail","Phone with offline Google Maps","Small first-aid kit and blister care","Sunglasses and lip balm","Hand warmers","Power bank","ID and card (Fallingwater is cashless)"]
+  const lists = {
+    "Wear": ["Waterproof hiking boots","Wool socks, 2 or 3 pairs","Base layer and fleece","Puffy jacket for the cold nights","Rain shell","Hiking pants, not jeans","Beanie and gloves","Something blaze orange","Slides for the bathhouse"],
+    "Bring for the cottage": ["Sleeping bag or bedding, and a pillow","Towel","Plates, cups and forks","Pan, pot and camp stove","Cooler","Headlamp","Lighter and fire starters","Power bank and chargers"],
+    "Buy on the way": ["Eggs, bacon, bagels, coffee","Trail mix, bars and fruit","Hot dogs or burgers as a dinner backup","S'mores supplies","Water, 2 gallons","Firewood and ice, near the park"]
   };
-  const buy = {
-    "Food for the cottage": ["Breakfast: eggs, bacon, bagels, butter","Coffee, creamer, tea, hot chocolate","Fruit (bananas, apples)","Dinner backup: hot dogs or burgers and buns","Chips and salsa","S'mores: graham crackers, chocolate, marshmallows","Water (2 gallon jugs)"],
-    "Trail and car": ["Trail mix and granola bars","Jerky","Gatorade or electrolyte packs","Gas for both cars before Grantsville / Wheeling"],
-    "Buy near the park": ["Firewood (local only)","Ice for the cooler","Blaze orange hats if anyone forgot","Extra hand warmers"]
-  };
-  function renderLists(id, data, prefix){
-    document.getElementById(id).innerHTML = Object.entries(data).map(([title, items], gi) => `
-      <div class="card">
-        <h3>${title} <small>${items.length} items</small></h3>
-        <ul class="check">${items.map((it,i)=>{
-          const key = `${prefix}-${gi}-${i}`;
-          return `<li><label for="${key}"><input type="checkbox" id="${key}" data-key="${key}"><span>${it}</span></label></li>`;
-        }).join("")}</ul>
-      </div>`).join("");
-  }
-  renderLists("packLists", pack, "pack");
-  renderLists("buyLists", buy, "buy");
-
+  document.getElementById("lists").innerHTML = Object.entries(lists).map(([t,items],g) => `
+    <div class="card"><h3>${t}</h3><ul class="check">${items.map((it,i) =>
+      `<li><label for="k${g}-${i}"><input type="checkbox" id="k${g}-${i}" data-key="k${g}-${i}"><span>${it}</span></label></li>`).join("")}</ul></div>`).join("");
   let saved = {};
-  try { saved = JSON.parse(localStorage.getItem("ohiopyle-checks") || "{}"); } catch(e) {}
+  try { saved = JSON.parse(localStorage.getItem("ohiopyle-checks-v2") || "{}"); } catch(e) {}
   document.querySelectorAll(".check input").forEach(cb => {
     if (saved[cb.dataset.key]) cb.checked = true;
     cb.addEventListener("change", () => {
       saved[cb.dataset.key] = cb.checked;
-      try { localStorage.setItem("ohiopyle-checks", JSON.stringify(saved)); } catch(e) {}
+      try { localStorage.setItem("ohiopyle-checks-v2", JSON.stringify(saved)); } catch(e) {}
     });
   });
 })();
