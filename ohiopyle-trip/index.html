@@ -181,12 +181,14 @@ footer p{max-width:70ch}
         </ul>
       </div>
     </div>
-    <div class="wx" aria-label="Ohiopyle forecast, checked Nov 16">
+    <div class="wx" id="wx" aria-label="Ohiopyle forecast">
       <div><span>Fri</span><b>63° / 36°</b><span>Dry</span></div>
       <div><span>Sat</span><b>65° / 40°</b><span>Dry</span></div>
       <div><span>Sun</span><b>61° / 42°</b><span>25% rain</span></div>
     </div>
-    <p class="note"><b>Sunday:</b> both cars leave Wheeling at 8:30 AM and reach Columbus around 11 AM. Forecast checked Nov 16, so look again Thursday.</p>
+    <p class="sub" id="wxnote" style="margin:8px 0 0;font-size:14px">Ohiopyle forecast, checked Nov 16.</p>
+    <p class="note" id="wxtip" hidden></p>
+    <p class="note"><b>Sunday:</b> both cars leave Wheeling at 8:30 AM and reach Columbus around 11 AM.</p>
   </div>
 </section>
 
@@ -306,6 +308,26 @@ footer p{max-width:70ch}
     document.getElementById("cm").textContent = Math.floor(s%3600/60);
   }
   tick(); setInterval(tick, 30000);
+
+  /* live forecast for Ohiopyle from Open-Meteo. Falls back to the saved numbers above. */
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=39.87&longitude=-79.49&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&start_date=2026-11-20&end_date=2026-11-22")
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(j => {
+      const d = j.daily, names = ["Fri","Sat","Sun"], wet = [];
+      if (!d || d.temperature_2m_max.length !== 3 || d.temperature_2m_max.some(v => v == null)) return;
+      let cold = false;
+      document.getElementById("wx").innerHTML = names.map((n,i) => {
+        const hi = Math.round(d.temperature_2m_max[i]), lo = Math.round(d.temperature_2m_min[i]), rain = d.precipitation_probability_max[i];
+        if (rain >= 50) wet.push(n);
+        if (lo <= 32) cold = true;
+        return `<div><span>${n}</span><b>${hi}° / ${lo}°</b><span>${rain == null ? "" : rain < 15 ? "Dry" : rain + "% rain"}</span></div>`;
+      }).join("");
+      document.getElementById("wxnote").textContent = "Live Ohiopyle forecast. It updates every time you open this page.";
+      const tips = [];
+      if (wet.length) tips.push("Rain is likely on " + wet.join(" and ") + ". Bring a rain shell and take the wet rocks slowly.");
+      if (cold) tips.push("Nights drop to freezing. Pack the warm layers and a good sleeping bag.");
+      if (tips.length){ const t = document.getElementById("wxtip"); t.innerHTML = "<b>Weather heads-up:</b> " + tips.join(" "); t.hidden = false; }
+    }).catch(() => {});
 
   const gm = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
   const star = (r,c) => `<p class="stars"><i>★</i> ${r.toFixed(1)} <span>· ${c.toLocaleString("en-US")} Google reviews</span></p>`;
